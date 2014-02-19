@@ -21,7 +21,7 @@ public class Cliente {
 	}
 
 	
-	//____________
+	//____________teste fabio
 	
 	public void executarMenu(){
 		
@@ -32,8 +32,8 @@ public class Cliente {
 		{
 			socket = new Socket(this.host, this.porta);
 			
-			//Para quando eu abrir a página de um produto 
-			//Ou para quando eu efetuar compra ou fechar a página do produto
+			//Para quando eu abrir a pï¿½gina de um produto 
+			//Ou para quando eu efetuar compra ou fechar a pï¿½gina do produto
 			PrintStream ps = new PrintStream(socket.getOutputStream()); 
 			
 			while(run){
@@ -50,10 +50,10 @@ public class Cliente {
 				
 				
 				
-				// 3 - Abre a página do produto 
-				/*O cliente ira escolher um produto da lista de produtos e irá abrir a sua página
-				Ele vai poder ou comprar o produto e vai receber as atualizações
-				Ou ele vai fechar a pagina e vai deixar de receber as atualizações da quantidade do produto*/
+				// 3 - Abre a pï¿½gina do produto 
+				/*O cliente ira escolher um produto da lista de produtos e irï¿½ abrir a sua pï¿½gina
+				Ele vai poder ou comprar o produto e vai receber as atualizaï¿½ï¿½es
+				Ou ele vai fechar a pagina e vai deixar de receber as atualizaï¿½ï¿½es da quantidade do produto*/
 				
 				
 				// 4 - Compra o Produto
