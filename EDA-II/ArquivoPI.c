@@ -6,11 +6,19 @@ typedef struct{
     char nome_produto[20];
 }tp_produto;
 
+typedef struct{
+    char nome_cliente[20];
+    char email[20];
+}tp_cliente;
 
+//Pilha
 
 typedef struct{
-    tp_no *topo;
+    int topo;
+    tp_produto vetor_produtos[5];
 }tp_pilha;
+
+//Filas
 
 typedef struct tp_no{
     tp_produto produto;
@@ -25,6 +33,24 @@ void le_produto(char produto[20]){
     scanf("%s",produto);
 }
 
+
+int pilha_esta_vazia(tp_pilha *pilha){
+
+    //5 é o limite de produtos
+	if (pilha->topo == 5)
+		return 1;
+	else
+        return 0;
+}
+
+int pilha_esta_cheia(tp_pilha *pilha){
+	if (pilha->topo == 5)
+		return 1;
+	else
+        return 0;
+}
+
+/*
 int vazia(tp_pilha *pilha){
 
     if(pilha->topo == NULL){
@@ -33,7 +59,7 @@ int vazia(tp_pilha *pilha){
     else{
         return 0;
     }
-}
+}*/
 
 tp_no* criano(){
 
@@ -50,52 +76,48 @@ tp_no* criano(){
    }
 }
 
-void inserir(tp_pilha *pilha, tp_produto produto){
+void push(tp_pilha *pilha, tp_produto produto){
 
-    if(vazia(pilha)){
-        pilha->topo = criano();
-        pilha->topo->produto = produto;
-        pilha->topo->ant = NULL;
-        pilha->topo->prox = NULL;
-    }
-    else{
-        pilha->topo->prox = criano();
-        pilha->topo->prox->ant = pilha->topo;
-        pilha->topo = pilha->topo->prox;
-        pilha->topo->produto = produto;
-        pilha->topo->prox = NULL;
-    }
+    if (!pilha_esta_cheia(pilha)) {
+		pilha->vetor_produtos[pilha->topo++] = produto;
+		return 1;
+	}
+	else {
+		printf("Erro: pilha cheia\n");
+		return 0;
+	}
 }
 
-void excluir(tp_pilha *pilha){
+void pop(tp_pilha *pilha){
 
-    if(!vazia(pilha)){
-       if(pilha->topo->ant == NULL){
-           free(pilha->topo);
-           pilha->topo = NULL;
-       }
-       else{
-           pilha->topo = pilha->topo->ant;
-           free(pilha->topo->prox);
-           pilha->topo->prox = NULL;
-       }
-    }
-    else{
-        printf("Erro: Pilha vazia\n");
-    }
+    if (!pilha_esta_vazia(pilha)){
+		return pilha->vetor_produtos[--pilha->topo];
+	}
+	else{
+		printf("Erro: pilha vazia\n");
+		return 0;
+	}
 }
 
-void listar(tp_pilha *pilha, tp_no *pos){
+void listar_pilha(tp_pilha *pilha, tp_no *pos){
 
-    if(vazia(pilha)){
-      printf("Erro: Pilha vazia\n");
-      return;
-    }
-    else{
-        while(pos != NULL){
-            puts(pos->produto.nome_produto);
-            pos = pos->ant;
-        }
+    int i;
+	if (!pilha_esta_vazia(pilha))
+		for (i = pilha->topo-1; i >= 0; i--)
+			printf ("%d\n",pilha->vetor_produtos[i]);
+	else
+        printf ("Pilha vazia\n");
+}
+
+void criar_produtos(tp_pilha *pilha){
+
+    int i;
+
+    tp_produto produto;
+
+    for(i = 0; i < 5; i++){
+       le_produto(produto.nome_produto);
+       push(&pilha, produto);
     }
 }
 
@@ -105,24 +127,20 @@ int main(){
     tp_pilha pilha = {NULL};
     tp_produto produto;
     char op;
-    int qtd_produtos , i;
 
+
+    criar_produtos(&pilha);
 	do {
-        printf("\n 1 - inserir produto\n");
-        printf(" 2 - listar produtos da pilha\n");
-        printf(" 3 - excluir produto da pilha\n");
+        printf(" 1 - listar produtos da pilha\n");
+        printf(" 2 - excluir produto da pilha\n");
         printf(" 0 - sair\n\n");
         fflush(stdin); scanf("%c", &op);
         switch (op) {
         case '1':
-            le_produto(produto.nome_produto);
-            inserir(&pilha, produto);
+            listar_pilha(&pilha, pilha.topo);
             break;
         case '2':
-            listar(&pilha, pilha.topo);
-            break;
-        case '3':
-            excluir(&pilha);
+            pop(&pilha);
             break;
         case '0':
             printf("Fim do programa");
