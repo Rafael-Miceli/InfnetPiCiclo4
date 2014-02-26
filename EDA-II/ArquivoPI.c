@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 
+
 //Pilha de produtos
 
 typedef struct{
@@ -20,7 +21,7 @@ typedef struct{
     char *email;
 }tp_cliente;
 
-typedef struct tp_no{
+typedef struct tp_nofila{
     tp_cliente cliente;
     struct tp_no *ant;
     struct tp_no *prox;
@@ -34,7 +35,7 @@ typedef struct {
 //___________________________________
 //lista dos clientes sorteados
 
-typedef struct tp_no {
+typedef struct tp_nolista{
     tp_produto produto;
     tp_cliente cliente;
 	struct tp_no *ant;
@@ -45,6 +46,8 @@ typedef struct {
 	tp_no *inicio;
 	tp_no *fim;
 } tp_lista;
+
+
 
 
 //___________________________________
