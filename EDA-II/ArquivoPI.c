@@ -2,7 +2,7 @@
 #include<string.h>
 
 
-//Pilha de produtos
+//Pilha de produtos bbllaa
 
 typedef struct{
     char *nome_produto;
