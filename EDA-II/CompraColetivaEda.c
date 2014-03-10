@@ -259,7 +259,7 @@ void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *p
 
     do
     {
-        if (produto == 5)
+        if (produto == 5 || pilhaProdutos->topo == produto)
             produto = 0;
 
         if (ListaDeClientesPromocionaddoVazia(*listaDeClientesPromocionados)) {
@@ -274,13 +274,14 @@ void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *p
             listaDeClientesPromocionados->fim->referencia_prox = AdicionarNoNaLista();
             listaDeClientesPromocionados->fim->referencia_prox->referencia_ant = listaDeClientesPromocionados->fim;
             listaDeClientesPromocionados->fim = listaDeClientesPromocionados->fim->referencia_prox;
-            listaDeClientesPromocionados->inicio->NomeCliente = clienteAtual->cliente.Nome;
-            listaDeClientesPromocionados->inicio->EmailCliente = clienteAtual->cliente.Email;
-            listaDeClientesPromocionados->inicio->NomeProduto = pilhaProdutos->produtos[produto++].Nome;
+            listaDeClientesPromocionados->fim->NomeCliente = clienteAtual->cliente.Nome;
+            listaDeClientesPromocionados->fim->EmailCliente = clienteAtual->cliente.Email;
+            listaDeClientesPromocionados->fim->NomeProduto = pilhaProdutos->produtos[produto++].Nome;
             listaDeClientesPromocionados->fim->referencia_prox = NULL;
         }
-    } while(clienteAtual->referencia_prox != NULL);
 
+        clienteAtual = clienteAtual->referencia_prox;
+    } while(clienteAtual != NULL);
 }
 
 void ListarClientesPromocionados(ListaDeClientesPromocionados listaDeClientesPromocionados, NoDeClientesPromocionados *noDeClientesPromocionados){
@@ -350,6 +351,7 @@ int PushProduto(PilhaProdutos *pilhaProdutos, char *produto){
 
 void PopProduto(PilhaProdutos *pilhaProdutos){
 	if (!PilhaProdutosVazia(pilhaProdutos)){
+        pilhaProdutos->produtos[pilhaProdutos->topo].Nome = NULL;
 		pilhaProdutos->produtos[--pilhaProdutos->topo];
 	}
 	else{
