@@ -56,7 +56,7 @@ void ImprimirMenuPromocoesProdutos();
 void ImprimirMenuClientes();
 
 
-// Métodos Pilha de Produtos
+// MÃ©todos Pilha de Produtos
 
 int PilhaProdutosVazia(PilhaProdutos *pilhaProdutos);
 int PilhaProdutosCheia(PilhaProdutos *pilhaProdutos);
@@ -66,11 +66,12 @@ void ListarProdutos(PilhaProdutos *pilhaProdutos);
 void EmpilharProdutosModoPreguica();
 
 
-// Métodos Fila de Clientes
+// MÃ©todos Fila de Clientes
 
 int FilaDeClienteVazia(FilaDeClientes filaDeClientes);
 ListaDeClientes* AdicionarNaFila();
 void EnfileirarCliente(FilaDeClientes *filaDeClientes, Cliente cliente);
+void InserirClientesModoPreguica();
 void DesenfileirarCliente(FilaDeClientes *filaDeClientes);
 void ListarClientes(FilaDeClientes filaDeClientes, ListaDeClientes *listaDeClientes);
 
@@ -186,7 +187,7 @@ void ImprimirMenuClientes(){
         printf("1 - Enfileirar Cliente na Fila\n");
         printf("2 - Remover Cliente do fim da Fila\n");
         printf("3 - Listar Fila de Clientes\n");
-        printf("4 - Cadastro Preguicoso (Mais 30 clientes para voce que esta com preguica)\n");
+        printf("4 - Cadastro Preguicoso (Mais 5 clientes para voce que esta com preguica)\n");
         printf("5 - Voltar Menu Principal\n");
 
         scanf("%d", &opcao);
@@ -207,7 +208,7 @@ void ImprimirMenuClientes(){
             ListarClientes(_filaDeClientes, _filaDeClientes.fim);
             break;
         case 4:
-            //printf("\nFim da aplicacao");
+            InserirClientesModoPreguica();
             break;
         case 5:
             printf("\nVoltando");
@@ -301,7 +302,7 @@ int ListaDeClientesPromocionaddoVazia(ListaDeClientesPromocionados listaDeClient
 
 
 //======================================================================================================
-// Métodos Pilha de Produtos
+// MÃ©todos Pilha de Produtos
 
 int PilhaProdutosVazia(PilhaProdutos *pilhaProdutos){
 
@@ -350,7 +351,7 @@ void ListarProdutos(PilhaProdutos *pilhaProdutos){
         printf("========= Produtos em Promocao =========\n");
     }
 	else
-        printf ("Pilha vazia\n");
+        printf ("\nPilha vazia\n");
 }
 
 void EmpilharProdutosModoPreguica(PilhaProdutos *pilhaProdutos){
@@ -368,10 +369,12 @@ void EmpilharProdutosModoPreguica(PilhaProdutos *pilhaProdutos){
 	 	 pilhaProdutos->produtos[pilhaProdutos->topo++].Nome = strdup(produtoNome);
 	 	 prodCount++;
     }
+
+    printf("\n\n Pilha De Produtos Completa\n\n");
 }
 
 //=================================================================================================================
-// Métodos fila de Cliente
+// MÃ©todos fila de Cliente
 
 
 int FilaDeClienteVazia(FilaDeClientes filaDeClientes) {
@@ -396,8 +399,6 @@ ListaDeClientes* AdicionarNaFila(){
 
 void EnfileirarCliente(FilaDeClientes *filaDeClientes, Cliente cliente) {
 
-
-
     if (FilaDeClienteVazia(*filaDeClientes)) {
         filaDeClientes->inicio = filaDeClientes->fim = AdicionarNaFila();
         filaDeClientes->inicio->cliente = cliente;
@@ -412,6 +413,37 @@ void EnfileirarCliente(FilaDeClientes *filaDeClientes, Cliente cliente) {
         filaDeClientes->fim->referencia_prox = NULL;
     }
 }
+
+void InserirClientesModoPreguica(){
+
+    Cliente cliente01;
+    strcpy(cliente01.Nome,"cliente1");
+    strcpy(cliente01.Email,"cliente01@email.com");
+    EnfileirarCliente(&_filaDeClientes, cliente01);
+
+    Cliente cliente02;
+    strcpy(cliente02.Nome,"cliente2");
+    strcpy(cliente02.Email,"cliente02@email.com");
+    EnfileirarCliente(&_filaDeClientes, cliente02);
+
+    Cliente cliente03;
+    strcpy(cliente03.Nome,"cliente3");
+    strcpy(cliente03.Email,"cliente03@email.com");
+    EnfileirarCliente(&_filaDeClientes, cliente03);
+
+    Cliente cliente04;
+    strcpy(cliente04.Nome,"cliente4");
+    strcpy(cliente04.Email,"cliente04@email.com");
+    EnfileirarCliente(&_filaDeClientes, cliente04);
+
+    Cliente cliente05;
+    strcpy(cliente05.Nome,"cliente5");
+    strcpy(cliente05.Email,"cliente05@email.com");
+    EnfileirarCliente(&_filaDeClientes, cliente05);
+
+    printf("\n\n5 clientes inseridos com sucesso\n\n");
+}
+
 
 void DesenfileirarCliente(FilaDeClientes *filaDeClientes) {
 
@@ -432,8 +464,9 @@ void DesenfileirarCliente(FilaDeClientes *filaDeClientes) {
 
 void ListarClientes(FilaDeClientes filaDeClientes, ListaDeClientes *listaDeClientes) {
 
+
     if (FilaDeClienteVazia(filaDeClientes)) {
-        printf("Fila de Clientes vazia\n");
+        printf("\nFila de Clientes vazia\n");
         return;
     }
 
@@ -446,4 +479,3 @@ void ListarClientes(FilaDeClientes filaDeClientes, ListaDeClientes *listaDeClien
         ListarClientes(filaDeClientes, listaDeClientes->referencia_ant);
 
 }
-
