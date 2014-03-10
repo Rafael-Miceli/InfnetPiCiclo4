@@ -260,7 +260,10 @@ void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *p
     do
     {
         if (produto == 0)
-            produto = pilhaProdutos->topo;
+        {
+            printf("\n\nPromocoes de Produtos esgotadas.\n\n");
+            break;
+        }
 
         if (ListaDeClientesPromocionaddoVazia(*listaDeClientesPromocionados)) {
             listaDeClientesPromocionados->inicio = listaDeClientesPromocionados->fim = AdicionarNoNaLista();
@@ -269,6 +272,8 @@ void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *p
             listaDeClientesPromocionados->inicio->NomeProduto = pilhaProdutos->produtos[--produto].Nome;
             listaDeClientesPromocionados->inicio->referencia_ant = NULL;
             listaDeClientesPromocionados->inicio->referencia_prox = NULL;
+            DesenfileirarCliente(filaDeClientes);
+            PopProduto(pilhaProdutos);
         }
         else{
             listaDeClientesPromocionados->fim->referencia_prox = AdicionarNoNaLista();
@@ -278,6 +283,8 @@ void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *p
             listaDeClientesPromocionados->fim->EmailCliente = clienteAtual->cliente.Email;
             listaDeClientesPromocionados->fim->NomeProduto = pilhaProdutos->produtos[--produto].Nome;
             listaDeClientesPromocionados->fim->referencia_prox = NULL;
+            DesenfileirarCliente(filaDeClientes);
+            PopProduto(pilhaProdutos);
         }
 
         clienteAtual = clienteAtual->referencia_prox;
@@ -290,7 +297,7 @@ void ListarClientesPromocionados(ListaDeClientesPromocionados listaDeClientesPro
         return;
     }
 
-    printf("== == == Cliente Promocionado == == ==\n");
+    printf("\n== == == Cliente Promocionado == == ==\n");
     printf("%s\n", noDeClientesPromocionados->NomeCliente);
     printf("%s\n", noDeClientesPromocionados->EmailCliente);
     printf("%s\n", noDeClientesPromocionados->NomeProduto);
