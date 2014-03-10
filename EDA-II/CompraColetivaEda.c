@@ -4,6 +4,24 @@
 
 #define MaxProdutos 5
 
+
+/*NOMES :
+
+
+RICARDO MENDES
+
+ALEX  BAURUEL
+
+ALEXANDRO  BENTO
+
+FABIO NASCIMENTO
+
+RAFAEL MICELI
+
+
+*/
+
+
 typedef struct{
     char *Nome;
 } Produto;
