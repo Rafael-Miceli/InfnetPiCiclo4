@@ -244,7 +244,7 @@ void ImprimirMenuClientes(){
 //Entregar Promocoes a Clientes
 void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *pilhaProdutos, ListaDeClientesPromocionados *listaDeClientesPromocionados){
     ListaDeClientes *clienteAtual;
-    int produto = 0;
+    int produto = pilhaProdutos->topo;
 
 
     if (!FilaDeClienteVazia(*filaDeClientes) && !PilhaProdutosVazia(pilhaProdutos))
@@ -259,14 +259,14 @@ void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *p
 
     do
     {
-        if (produto == 5 || pilhaProdutos->topo == produto)
-            produto = 0;
+        if (produto == 0)
+            produto = pilhaProdutos->topo;
 
         if (ListaDeClientesPromocionaddoVazia(*listaDeClientesPromocionados)) {
             listaDeClientesPromocionados->inicio = listaDeClientesPromocionados->fim = AdicionarNoNaLista();
             listaDeClientesPromocionados->inicio->NomeCliente = clienteAtual->cliente.Nome;
             listaDeClientesPromocionados->inicio->EmailCliente = clienteAtual->cliente.Email;
-            listaDeClientesPromocionados->inicio->NomeProduto = pilhaProdutos->produtos[produto++].Nome;
+            listaDeClientesPromocionados->inicio->NomeProduto = pilhaProdutos->produtos[--produto].Nome;
             listaDeClientesPromocionados->inicio->referencia_ant = NULL;
             listaDeClientesPromocionados->inicio->referencia_prox = NULL;
         }
@@ -276,7 +276,7 @@ void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *p
             listaDeClientesPromocionados->fim = listaDeClientesPromocionados->fim->referencia_prox;
             listaDeClientesPromocionados->fim->NomeCliente = clienteAtual->cliente.Nome;
             listaDeClientesPromocionados->fim->EmailCliente = clienteAtual->cliente.Email;
-            listaDeClientesPromocionados->fim->NomeProduto = pilhaProdutos->produtos[produto++].Nome;
+            listaDeClientesPromocionados->fim->NomeProduto = pilhaProdutos->produtos[--produto].Nome;
             listaDeClientesPromocionados->fim->referencia_prox = NULL;
         }
 
