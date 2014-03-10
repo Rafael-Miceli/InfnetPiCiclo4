@@ -47,6 +47,8 @@ typedef struct{
     NoDeClientesPromocionados *fim;
 } ListaDeClientesPromocionados;
 
+ListaDeClientesPromocionados _listaDeClientesPromocionados = {NULL, NULL};
+
 //Menus
 
 void ImprimirMenuPrincipal();
@@ -74,6 +76,10 @@ void ListarClientes(FilaDeClientes filaDeClientes, ListaDeClientes *listaDeClien
 
 //Entregar Promocoes a Clientes
 void EntregarPromocoesAClientes();
+NoDeClientesPromocionados* AdicionarNoNaLista();
+void ListarClientesPromocionados(ListaDeClientesPromocionados listaDeClientesPromocionados, NoDeClientesPromocionados *noDeClientesPromocionados);
+int ListaDeClientesPromocionaddoVazia(ListaDeClientesPromocionados listaDeClientesPromocionados);
+
 
 main(){
 
@@ -109,7 +115,8 @@ void ImprimirMenuPrincipal(){
             ImprimirMenuClientes();
             break;
         case 3:
-            EntregarPromocoesAClientes();
+            EntregarPromocoesAClientes(&_filaDeClientes, &_pilhaProdutos, &_listaDeClientesPromocionados);
+            ListarClientesPromocionados(_listaDeClientesPromocionados, _listaDeClientesPromocionados.fim);
             break;
         case 4:
             printf("\nFim da aplicacao");
@@ -216,10 +223,80 @@ void ImprimirMenuClientes(){
 
 //======================================================================================================
 //Entregar Promocoes a Clientes
-void EntregarPromocoesAClientes(){
+void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *pilhaProdutos, ListaDeClientesPromocionados *listaDeClientesPromocionados){
+    ListaDeClientes *clienteAtual;
+    int produto = 0;
 
 
+    if (!FilaDeClienteVazia(*filaDeClientes) && !PilhaProdutosVazia(pilhaProdutos))
+    {
+        clienteAtual = filaDeClientes->inicio;
+    }
+    else
+    {
+        printf("Sem produtos ou Clientes\n");
+        return;
+    }
 
+    do
+    {
+        if (produto == 5)
+            produto = 0;
+
+        if (ListaDeClientesPromocionaddoVazia(*listaDeClientesPromocionados)) {
+            listaDeClientesPromocionados->inicio = listaDeClientesPromocionados->fim = AdicionarNoNaLista();
+            listaDeClientesPromocionados->inicio->NomeCliente = clienteAtual->cliente.Nome;
+            listaDeClientesPromocionados->inicio->EmailCliente = clienteAtual->cliente.Email;
+            listaDeClientesPromocionados->inicio->NomeProduto = pilhaProdutos->produtos[produto++].Nome;
+            listaDeClientesPromocionados->inicio->referencia_ant = NULL;
+            listaDeClientesPromocionados->inicio->referencia_prox = NULL;
+        }
+        else{
+            listaDeClientesPromocionados->fim->referencia_prox = AdicionarNoNaLista();
+            listaDeClientesPromocionados->fim->referencia_prox->referencia_ant = listaDeClientesPromocionados->fim;
+            listaDeClientesPromocionados->fim = listaDeClientesPromocionados->fim->referencia_prox;
+            listaDeClientesPromocionados->inicio->NomeCliente = clienteAtual->cliente.Nome;
+            listaDeClientesPromocionados->inicio->EmailCliente = clienteAtual->cliente.Email;
+            listaDeClientesPromocionados->inicio->NomeProduto = pilhaProdutos->produtos[produto++].Nome;
+            listaDeClientesPromocionados->fim->referencia_prox = NULL;
+        }
+    } while(clienteAtual->referencia_prox != NULL);
+
+}
+
+void ListarClientesPromocionados(ListaDeClientesPromocionados listaDeClientesPromocionados, NoDeClientesPromocionados *noDeClientesPromocionados){
+    if (ListaDeClientesPromocionaddoVazia(listaDeClientesPromocionados)) {
+        printf("Lista de Clientes Promocionados vazia\n");
+        return;
+    }
+
+    printf("== == == Cliente Promocionado == == ==\n");
+    printf("%s\n", noDeClientesPromocionados->NomeCliente);
+    printf("%s\n", noDeClientesPromocionados->EmailCliente);
+    printf("%s\n", noDeClientesPromocionados->NomeProduto);
+    printf("== == == Cliente Promocionado == == ==\n");
+
+    if (noDeClientesPromocionados->referencia_ant != NULL)
+        ListarClientesPromocionados(listaDeClientesPromocionados, noDeClientesPromocionados->referencia_ant);
+}
+
+NoDeClientesPromocionados* AdicionarNoNaLista(){
+    NoDeClientesPromocionados *no;
+
+    no = (NoDeClientesPromocionados*)malloc(sizeof(struct NoDeClientesPromocionados));
+    if (no == NULL) {
+        printf("Erro: criacao do no\n");
+        return NULL;
+    }
+	else
+        return no;
+}
+
+int ListaDeClientesPromocionaddoVazia(ListaDeClientesPromocionados listaDeClientesPromocionados){
+    if (listaDeClientesPromocionados.inicio == NULL)
+        return 1;
+    else
+        return 0;
 }
 
 
@@ -227,6 +304,7 @@ void EntregarPromocoesAClientes(){
 // Métodos Pilha de Produtos
 
 int PilhaProdutosVazia(PilhaProdutos *pilhaProdutos){
+
 	if (pilhaProdutos->topo <= 0)
 		return 1;
 	else
@@ -292,6 +370,7 @@ void EmpilharProdutosModoPreguica(PilhaProdutos *pilhaProdutos){
     }
 }
 
+//=================================================================================================================
 // Métodos fila de Cliente
 
 
@@ -367,3 +446,4 @@ void ListarClientes(FilaDeClientes filaDeClientes, ListaDeClientes *listaDeClien
         ListarClientes(filaDeClientes, listaDeClientes->referencia_ant);
 
 }
+
