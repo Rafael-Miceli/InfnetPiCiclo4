@@ -53,9 +53,9 @@ FilaDeClientes _filaDeClientes = {NULL, NULL};
 
 
 typedef struct NoDeClientesPromocionados{
-    char *NomeCliente;
-    char *EmailCliente;
-    char *NomeProduto;
+    char NomeCliente[100];
+    char EmailCliente[100];
+    char NomeProduto[100];
     struct NoDeClientesPromocionados *referencia_prox;
     struct NoDeClientesPromocionados *referencia_ant;
 } NoDeClientesPromocionados;
@@ -267,9 +267,9 @@ void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *p
 
         if (ListaDeClientesPromocionaddoVazia(*listaDeClientesPromocionados)) {
             listaDeClientesPromocionados->inicio = listaDeClientesPromocionados->fim = AdicionarNoNaLista();
-            listaDeClientesPromocionados->inicio->NomeCliente = clienteAtual->cliente.Nome;
-            listaDeClientesPromocionados->inicio->EmailCliente = clienteAtual->cliente.Email;
-            listaDeClientesPromocionados->inicio->NomeProduto = pilhaProdutos->produtos[--produto].Nome;
+            strcpy(listaDeClientesPromocionados->inicio->NomeCliente, clienteAtual->cliente.Nome);
+            strcpy(listaDeClientesPromocionados->inicio->EmailCliente , clienteAtual->cliente.Email);
+            strcpy(listaDeClientesPromocionados->inicio->NomeProduto , pilhaProdutos->produtos[--produto].Nome);
             listaDeClientesPromocionados->inicio->referencia_ant = NULL;
             listaDeClientesPromocionados->inicio->referencia_prox = NULL;
             DesenfileirarCliente(filaDeClientes);
@@ -279,9 +279,9 @@ void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *p
             listaDeClientesPromocionados->fim->referencia_prox = AdicionarNoNaLista();
             listaDeClientesPromocionados->fim->referencia_prox->referencia_ant = listaDeClientesPromocionados->fim;
             listaDeClientesPromocionados->fim = listaDeClientesPromocionados->fim->referencia_prox;
-            listaDeClientesPromocionados->fim->NomeCliente = clienteAtual->cliente.Nome;
-            listaDeClientesPromocionados->fim->EmailCliente = clienteAtual->cliente.Email;
-            listaDeClientesPromocionados->fim->NomeProduto = pilhaProdutos->produtos[--produto].Nome;
+            strcpy(listaDeClientesPromocionados->fim->NomeCliente , clienteAtual->cliente.Nome);
+            strcpy(listaDeClientesPromocionados->fim->EmailCliente , clienteAtual->cliente.Email);
+            strcpy(listaDeClientesPromocionados->fim->NomeProduto , pilhaProdutos->produtos[--produto].Nome);
             listaDeClientesPromocionados->fim->referencia_prox = NULL;
             DesenfileirarCliente(filaDeClientes);
             PopProduto(pilhaProdutos);
