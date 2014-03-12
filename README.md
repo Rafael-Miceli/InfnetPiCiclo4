@@ -4,12 +4,12 @@ InfnetPiCiclo4
 Repositório contendo todos os projetos integrados do 4° ciclo
 
 
-#Ricardo = ?
+#Ricardo = Estatísticas (Feito) 
 
-#Rafael = ?
+#Rafael = EDA (Feito)
 
-#Fabio = ?
+#Fabio = Java (Pendente)
 
-#Alexandro = ?
+#Alexandro = Redes (Feito)
 
-#Alex = ?
+#Alex = Ingles (Pendente)
