@@ -1,0 +1,3 @@
+LP, favor rodar o programa principal primeiro que é o:
+
+"CompraColetivaEda".

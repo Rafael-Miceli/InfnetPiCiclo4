@@ -1,12 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-#define MaxProdutos 5
-
-
 /*NOMES :
-
 
 RICARDO MENDES
 
@@ -17,87 +9,32 @@ ALEXANDRO  BENTO
 FABIO NASCIMENTO
 
 RAFAEL MICELI
-
-
 */
 
 
-typedef struct{
-    char *Nome;
-} Produto;
 
-typedef struct {
-	int topo;
-	Produto produtos[MaxProdutos];
-} PilhaProdutos;
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include "Produtos.c"
+#include "Clientes.c"
+#include "EntregaDePromocoes.c"
+
+
+//================ Variaveis Globais ================//
 
 PilhaProdutos _pilhaProdutos;
 
-typedef struct{
-    char Nome[100];
-    char Email[100];
-} Cliente;
+FilaDeClientes _filaDeClientes;
 
-typedef struct ListaDeClientes{
-    Cliente cliente;
-    struct ListaDeClientes *referencia_prox;
-    struct ListaDeClientes *referencia_ant;
-} ListaDeClientes;
+ListaDeClientesPromocionados _listaDeClientesPromocionados;
 
-typedef struct{
-    ListaDeClientes *inicio;
-    ListaDeClientes *fim;
-} FilaDeClientes;
-
-FilaDeClientes _filaDeClientes = {NULL, NULL};
-
-
-typedef struct NoDeClientesPromocionados{
-    char NomeCliente[100];
-    char EmailCliente[100];
-    char NomeProduto[100];
-    struct NoDeClientesPromocionados *referencia_prox;
-    struct NoDeClientesPromocionados *referencia_ant;
-} NoDeClientesPromocionados;
-
-typedef struct{
-    NoDeClientesPromocionados *inicio;
-    NoDeClientesPromocionados *fim;
-} ListaDeClientesPromocionados;
-
-ListaDeClientesPromocionados _listaDeClientesPromocionados = {NULL, NULL};
 
 //Menus
 
 void ImprimirMenuPrincipal();
 void ImprimirMenuPromocoesProdutos();
 void ImprimirMenuClientes();
-
-
-// Métodos Pilha de Produtos
-
-int PilhaProdutosVazia(PilhaProdutos *pilhaProdutos);
-int PilhaProdutosCheia(PilhaProdutos *pilhaProdutos);
-int PushProduto(PilhaProdutos *pilhaProdutos, char *produto);
-void PopProduto(PilhaProdutos *pilhaProdutos);
-void ListarProdutos(PilhaProdutos *pilhaProdutos);
-void EmpilharProdutosModoPreguica();
-
-
-// Métodos Fila de Clientes
-
-int FilaDeClienteVazia(FilaDeClientes filaDeClientes);
-ListaDeClientes* AdicionarNaFila();
-void EnfileirarCliente(FilaDeClientes *filaDeClientes, Cliente cliente);
-void InserirClientesModoPreguica();
-void DesenfileirarCliente(FilaDeClientes *filaDeClientes);
-void ListarClientes(FilaDeClientes filaDeClientes, ListaDeClientes *listaDeClientes);
-
-//Entregar Promocoes a Clientes
-void EntregarPromocoesAClientes();
-NoDeClientesPromocionados* AdicionarNoNaLista();
-void ListarClientesPromocionados(ListaDeClientesPromocionados listaDeClientesPromocionados, NoDeClientesPromocionados *noDeClientesPromocionados);
-int ListaDeClientesPromocionaddoVazia(ListaDeClientesPromocionados listaDeClientesPromocionados);
 
 
 main(){
@@ -239,270 +176,3 @@ void ImprimirMenuClientes(){
 
 }
 
-
-//======================================================================================================
-//Entregar Promocoes a Clientes
-void EntregarPromocoesAClientes(FilaDeClientes *filaDeClientes, PilhaProdutos *pilhaProdutos, ListaDeClientesPromocionados *listaDeClientesPromocionados){
-    ListaDeClientes *clienteAtual;
-    int produto = pilhaProdutos->topo;
-
-
-    if (!FilaDeClienteVazia(*filaDeClientes) && !PilhaProdutosVazia(pilhaProdutos))
-    {
-        clienteAtual = filaDeClientes->inicio;
-    }
-    else
-    {
-        printf("Sem produtos ou Clientes\n");
-        return;
-    }
-
-    do
-    {
-        if (produto == 0)
-        {
-            printf("\n\nPromocoes de Produtos esgotadas.\n\n");
-            break;
-        }
-
-        if (ListaDeClientesPromocionaddoVazia(*listaDeClientesPromocionados)) {
-            listaDeClientesPromocionados->inicio = listaDeClientesPromocionados->fim = AdicionarNoNaLista();
-            strcpy(listaDeClientesPromocionados->inicio->NomeCliente, clienteAtual->cliente.Nome);
-            strcpy(listaDeClientesPromocionados->inicio->EmailCliente , clienteAtual->cliente.Email);
-            strcpy(listaDeClientesPromocionados->inicio->NomeProduto , pilhaProdutos->produtos[--produto].Nome);
-            listaDeClientesPromocionados->inicio->referencia_ant = NULL;
-            listaDeClientesPromocionados->inicio->referencia_prox = NULL;
-            DesenfileirarCliente(filaDeClientes);
-            PopProduto(pilhaProdutos);
-        }
-        else{
-            listaDeClientesPromocionados->fim->referencia_prox = AdicionarNoNaLista();
-            listaDeClientesPromocionados->fim->referencia_prox->referencia_ant = listaDeClientesPromocionados->fim;
-            listaDeClientesPromocionados->fim = listaDeClientesPromocionados->fim->referencia_prox;
-            strcpy(listaDeClientesPromocionados->fim->NomeCliente , clienteAtual->cliente.Nome);
-            strcpy(listaDeClientesPromocionados->fim->EmailCliente , clienteAtual->cliente.Email);
-            strcpy(listaDeClientesPromocionados->fim->NomeProduto , pilhaProdutos->produtos[--produto].Nome);
-            listaDeClientesPromocionados->fim->referencia_prox = NULL;
-            DesenfileirarCliente(filaDeClientes);
-            PopProduto(pilhaProdutos);
-        }
-
-        clienteAtual = clienteAtual->referencia_prox;
-    } while(clienteAtual != NULL);
-}
-
-void ListarClientesPromocionados(ListaDeClientesPromocionados listaDeClientesPromocionados, NoDeClientesPromocionados *noDeClientesPromocionados){
-    if (ListaDeClientesPromocionaddoVazia(listaDeClientesPromocionados)) {
-        printf("Lista de Clientes Promocionados vazia\n");
-        return;
-    }
-
-    printf("\n== == == Cliente Promocionado == == ==\n");
-    printf("%s\n", noDeClientesPromocionados->NomeCliente);
-    printf("%s\n", noDeClientesPromocionados->EmailCliente);
-    printf("%s\n", noDeClientesPromocionados->NomeProduto);
-    printf("== == == Cliente Promocionado == == ==\n");
-
-    if (noDeClientesPromocionados->referencia_ant != NULL)
-        ListarClientesPromocionados(listaDeClientesPromocionados, noDeClientesPromocionados->referencia_ant);
-}
-
-NoDeClientesPromocionados* AdicionarNoNaLista(){
-    NoDeClientesPromocionados *no;
-
-    no = (NoDeClientesPromocionados*)malloc(sizeof(struct NoDeClientesPromocionados));
-    if (no == NULL) {
-        printf("Erro: criacao do no\n");
-        return NULL;
-    }
-	else
-        return no;
-}
-
-int ListaDeClientesPromocionaddoVazia(ListaDeClientesPromocionados listaDeClientesPromocionados){
-    if (listaDeClientesPromocionados.inicio == NULL)
-        return 1;
-    else
-        return 0;
-}
-
-
-//======================================================================================================
-// Métodos Pilha de Produtos
-
-int PilhaProdutosVazia(PilhaProdutos *pilhaProdutos){
-
-	if (pilhaProdutos->topo <= 0)
-		return 1;
-	else
-        return 0;
-}
-
-int PilhaProdutosCheia(PilhaProdutos *pilhaProdutos){
-	if (pilhaProdutos->topo >= MaxProdutos)
-		return 1;
-	else
-        return 0;
-}
-
-int PushProduto(PilhaProdutos *pilhaProdutos, char *produto){
-	if (!PilhaProdutosCheia(pilhaProdutos)) {
-		pilhaProdutos->produtos[pilhaProdutos->topo++].Nome = strdup(produto);
-		return 1;
-	}
-	else {
-		printf("Erro: pilha cheia\n");
-		return 0;
-	}
-}
-
-void PopProduto(PilhaProdutos *pilhaProdutos){
-	if (!PilhaProdutosVazia(pilhaProdutos)){
-        pilhaProdutos->produtos[pilhaProdutos->topo].Nome = NULL;
-		pilhaProdutos->produtos[--pilhaProdutos->topo];
-	}
-	else{
-		printf("Erro: pilha vazia\n");
-	}
-}
-
-void ListarProdutos(PilhaProdutos *pilhaProdutos){
-	int i;
-	if (!PilhaProdutosVazia(pilhaProdutos))
-    {
-        printf("========= Produtos em Promocao =========\n");
-
-		for (i = pilhaProdutos->topo-1; i >= 0; i--)
-			printf ("%s\n",pilhaProdutos->produtos[i].Nome);
-
-        printf("========= Produtos em Promocao =========\n");
-    }
-	else
-        printf ("\nPilha vazia\n");
-}
-
-void EmpilharProdutosModoPreguica(PilhaProdutos *pilhaProdutos){
-    int prodCount = 49;
-    char produtoNome[100] = "Produto ";
-
-    if(PilhaProdutosCheia(pilhaProdutos))
-    {
-        printf("Erro: pilha cheia\n");
-        return;
-    }
-
-    while(!PilhaProdutosCheia(pilhaProdutos)) {
-         produtoNome[8] = prodCount;
-	 	 pilhaProdutos->produtos[pilhaProdutos->topo++].Nome = strdup(produtoNome);
-	 	 prodCount++;
-    }
-
-    printf("\n\n Pilha De Produtos Completa\n\n");
-}
-
-//=================================================================================================================
-// Métodos fila de Cliente
-
-
-int FilaDeClienteVazia(FilaDeClientes filaDeClientes) {
-
-    if (filaDeClientes.inicio == NULL)
-        return 1;
-    else
-        return 0;
-}
-
-ListaDeClientes* AdicionarNaFila(){
-    ListaDeClientes *no;
-
-    no = (ListaDeClientes*)malloc(sizeof(struct ListaDeClientes));
-    if (no == NULL) {
-        printf("Erro: criacao do no\n");
-        return NULL;
-    }
-	else
-        return no;
-}
-
-void EnfileirarCliente(FilaDeClientes *filaDeClientes, Cliente cliente) {
-
-    if (FilaDeClienteVazia(*filaDeClientes)) {
-        filaDeClientes->inicio = filaDeClientes->fim = AdicionarNaFila();
-        filaDeClientes->inicio->cliente = cliente;
-        filaDeClientes->inicio->referencia_ant = NULL;
-        filaDeClientes->inicio->referencia_prox = NULL;
-    }
-    else {
-        filaDeClientes->fim->referencia_prox = AdicionarNaFila();
-        filaDeClientes->fim->referencia_prox->referencia_ant = filaDeClientes->fim;
-        filaDeClientes->fim = filaDeClientes->fim->referencia_prox;
-        filaDeClientes->fim->cliente = cliente;
-        filaDeClientes->fim->referencia_prox = NULL;
-    }
-}
-
-void InserirClientesModoPreguica(){
-
-    Cliente cliente01;
-    strcpy(cliente01.Nome,"cliente1");
-    strcpy(cliente01.Email,"cliente01@email.com");
-    EnfileirarCliente(&_filaDeClientes, cliente01);
-
-    Cliente cliente02;
-    strcpy(cliente02.Nome,"cliente2");
-    strcpy(cliente02.Email,"cliente02@email.com");
-    EnfileirarCliente(&_filaDeClientes, cliente02);
-
-    Cliente cliente03;
-    strcpy(cliente03.Nome,"cliente3");
-    strcpy(cliente03.Email,"cliente03@email.com");
-    EnfileirarCliente(&_filaDeClientes, cliente03);
-
-    Cliente cliente04;
-    strcpy(cliente04.Nome,"cliente4");
-    strcpy(cliente04.Email,"cliente04@email.com");
-    EnfileirarCliente(&_filaDeClientes, cliente04);
-
-    Cliente cliente05;
-    strcpy(cliente05.Nome,"cliente5");
-    strcpy(cliente05.Email,"cliente05@email.com");
-    EnfileirarCliente(&_filaDeClientes, cliente05);
-
-    printf("\n\n5 clientes inseridos com sucesso\n\n");
-}
-
-
-void DesenfileirarCliente(FilaDeClientes *filaDeClientes) {
-
-    if (!FilaDeClienteVazia(*filaDeClientes)) {
-        if (filaDeClientes->inicio == filaDeClientes->fim) {
-            free(filaDeClientes->fim);
-            filaDeClientes->inicio = filaDeClientes->fim = NULL;
-        }
-        else {
-            filaDeClientes->inicio = filaDeClientes->inicio->referencia_prox;
-            free(filaDeClientes->inicio->referencia_ant);
-            filaDeClientes->inicio->referencia_ant= NULL;
-        }
-    }
-    else
-        printf("Erro: Fila de Clientes vazia\n");
-}
-
-void ListarClientes(FilaDeClientes filaDeClientes, ListaDeClientes *listaDeClientes) {
-
-
-    if (FilaDeClienteVazia(filaDeClientes)) {
-        printf("\nFila de Clientes vazia\n");
-        return;
-    }
-
-    printf("== == == Cliente == == ==\n");
-    printf("%s\n", listaDeClientes->cliente.Nome);
-    printf("%s\n", listaDeClientes->cliente.Email);
-    printf("== == == Cliente == == ==\n");
-
-    if (listaDeClientes->referencia_ant != NULL)
-        ListarClientes(filaDeClientes, listaDeClientes->referencia_ant);
-
-}
