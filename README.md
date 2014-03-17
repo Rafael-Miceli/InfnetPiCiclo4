@@ -12,4 +12,4 @@ Repositório contendo todos os projetos integrados do 4° ciclo
 
 #Alexandro = Redes (Feito)
 
-#Alex = Ingles (Pendente)
+#Alex = Ingles (Feito)
